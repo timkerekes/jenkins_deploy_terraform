@@ -40,8 +40,10 @@ pipeline {
         }
         stage('Push Docker Image') {
             steps {
-                docker.withRegistry("${env.CONTAINER_REGISTRY_URL}", 'dockerhub-timkerekes')
-                dockerImage.push()
+                script {
+                    docker.withRegistry("${env.CONTAINER_REGISTRY_URL}", 'dockerhub-timkerekes')
+                    dockerImage.push()
+                }
             }
         }       
         // }
