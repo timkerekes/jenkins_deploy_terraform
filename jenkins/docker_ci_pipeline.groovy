@@ -35,7 +35,9 @@ pipeline {
         // stages {
         stage('Build Docker Image') {
             steps {
-                dockerImage = docker.Build("${env.IMAGE_NAME}:${env.BUILD_ID}")
+                script {
+                    dockerImage = docker.Build("${env.IMAGE_NAME}:${env.BUILD_ID}")
+                }
             }
         }
         stage('Push Docker Image') {
