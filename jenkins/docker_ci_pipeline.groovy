@@ -43,8 +43,9 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("${env.CONTAINER_REGISTRY_URL}", 'dockerhub-timkerekes')
-                    dockerImage.push()
+                    docker.withRegistry("${env.CONTAINER_REGISTRY_URL}", 'dockerhub-timkerekes') {
+                        dockerImage.push()
+                    }
                 }
             }
         }       
