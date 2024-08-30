@@ -14,4 +14,3 @@ RUN latest_version=$(curl -s https://api.github.com/repos/hashicorp/terraform/re
     rm /tmp/terraform.zip
 
 CMD ["sh", "-c", "terraform version && python3 --version && pip --version && aws --version"]
-
