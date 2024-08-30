@@ -35,17 +35,13 @@ pipeline {
         // stages {
         stage('Build Docker Image') {
             steps {
-                script {
-                    dockerImage = docker.Build("${env.IMAGE_NAME}:${env.BUILD_ID}")
-                }
+                dockerImage = docker.Build("${env.IMAGE_NAME}:${env.BUILD_ID}")
             }
         }
         stage('Push Docker Image') {
             steps {
-                script {
-                    docker.withRegistry("${env.CONTAINER_REGISTRY_URL}", 'dockerhub-timkerekes')
-                    dockerImage.push()
-                }
+                docker.withRegistry("${env.CONTAINER_REGISTRY_URL}", 'dockerhub-timkerekes')
+                dockerImage.push()
             }
         }       
         // }
