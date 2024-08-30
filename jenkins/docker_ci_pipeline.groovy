@@ -18,37 +18,37 @@ pipeline {
         //             changeset "*/Dockerfile"
         //         }
         //     }
-            stage('Check Dockerfile Changes') {
+        stage('Check Dockerfile Changes') {
+            steps {
+                script {
+                    def changes = sh(script: "git diff --name-only HEAD~1 | grep Dockerfile || true", returnStdout: true).trim()
+                    if (changes) {
+                        echo "Dockerfile has changed. Proceeding with the build."
+                    } else {
+                        echo "No changes to Dockerfile. Skipping build."
+                        currentBuild.result = 'SUCCESS'
+                        error("Skipping further stages")
+                    }
+                }
+            }
+        }
+        stages {
+            stage('Build Docker Image') {
                 steps {
                     script {
-                        def changes = sh(script: "git diff --name-only HEAD~1 | grep Dockerfile || true", returnStdout: true).trim()
-                        if (changes) {
-                            echo "Dockerfile has changed. Proceeding with the build."
-                        } else {
-                            echo "No changes to Dockerfile. Skipping build."
-                            currentBuild.result = 'SUCCESS'
-                            error("Skipping further stages")
-                        }
+                        dockerImage = docker.Build("${env.IMAGE_NAME}:${env.BUILD_ID}")
                     }
                 }
             }
-            stages {
-                stage('Build Docker Image') {
-                    steps {
-                        script {
-                            dockerImage = docker.Build("${env.IMAGE_NAME}:${env.BUILD_ID}")
-                        }
+            stage('Push Docker Image') {
+                steps {
+                    script {
+                        docker.withRegistry("${env.CONTAINER_REGISTRY_URL}", 'dockerhub-timkerekes')
+                        dockerImage.push()
                     }
                 }
-                stage('Push Docker Image') {
-                    steps {
-                        script {
-                            docker.withRegistry("${env.CONTAINER_REGISTRY_URL}", 'dockerhub-timkerekes')
-                            dockerImage.push()
-                        }
-                    }
-                }       
-            }
+            }       
+        }
         // }
     }
 }
