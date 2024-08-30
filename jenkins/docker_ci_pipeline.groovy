@@ -7,6 +7,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
+                sleep(10)  // Wait for 10 seconds to ensure Jenkins has time to fetch changes
                 checkout scm
             }
         }
@@ -14,9 +15,23 @@ pipeline {
             when {
                 allOf {
                     branch 'main'
-                    changeset "Dockerfile"
+                    changeset "*/Dockerfile"
                 }
             }
+            // stage('Check Dockerfile Changes') {
+            //     steps {
+            //         script {
+            //             def changes = sh(script: "git diff --name-only HEAD~1 | grep Dockerfile || true", returnStdout: true).trim()
+            //             if (changes) {
+            //                 echo "Dockerfile has changed. Proceeding with the build."
+            //             } else {
+            //                 echo "No changes to Dockerfile. Skipping build."
+            //                 currentBuild.result = 'SUCCESS'
+            //                 error("Skipping further stages")
+            //             }
+            //         }
+            //     }
+            // }
             stages {
                 stage('Build Docker Image') {
                     steps {
