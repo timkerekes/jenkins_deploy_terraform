@@ -10,7 +10,7 @@ pipeline {
                 sleep(10)  // Wait for 10 seconds to ensure Jenkins has time to fetch changes
                 checkout scm
             }
-        // }
+        }
         // stage('Check Condition') {
         //     when {
         //         allOf {
